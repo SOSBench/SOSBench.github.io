@@ -1,0 +1,1696 @@
+<!doctype html>
+<html lang="en">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+
+    <head>
+        <title>SOSBench: Benchmarking Safety Alignment on Scientific Knowledge</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+
+        
+        <style>
+            :root {
+                --primary: #dc2626;
+                --secondary: #b91c1c;
+                --accent: #ef4444;
+                --background: #fef2f2;  /* Light red background for safety theme */
+                --text: #1e293b;
+            }
+
+            .header-wrapper {
+                background: linear-gradient(135deg, var(--background), #fef7ff);
+                padding: 2rem 0;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .header-wrapper::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(45deg, rgba(220, 38, 38, 0.05), rgba(239, 68, 68, 0.05));
+                z-index: 0;
+            }
+
+            .header-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2rem;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: center;
+                position: relative;
+                z-index: 1;
+            }
+
+            .header-content h1 {
+                font-size: 3.5rem;
+                margin: 0;
+            }
+
+            .sos-red {
+                color: var(--primary);
+            }
+
+            .bench-black {
+                color: #000000;
+            }
+
+            .header-content h2 {
+                font-size: 1.8rem;
+                font-weight: 500;
+                color: #666;
+                margin: 1rem 0 2rem;
+            }
+
+            .emphasis-text {
+                font-size: 1.5rem;
+                font-weight: 500;
+                margin: 2rem 0;
+                padding: 1rem 1.5rem;
+                background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(239, 68, 68, 0.1));
+                border-left: 4px solid var(--accent);
+                border-radius: 0 8px 8px 0;
+                color: var(--primary);
+            }
+
+            .emphasis-text strong {
+                color: var(--accent);
+            }
+
+            .header-image {
+                position: relative;
+            }
+
+            .header-image img {
+                width: 100%;
+                border-radius: 1rem;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .header-image::before {
+                content: '';
+                position: absolute;
+                top: 1rem;
+                right: -1rem;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(45deg, rgba(220, 38, 38, 0.15), rgba(239, 68, 68, 0.1));
+                border-radius: 1rem;
+                z-index: -1;
+                opacity: 0.6;
+            }
+
+
+
+            .button-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            .button {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.5rem;
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.2s;
+                background: white;
+                color: var(--text);
+                border: 1px solid #e5e7eb;
+            }
+
+            .paper-link {
+                background: white;
+                color: var(--text);
+                border: 1px solid #e5e7eb;
+            }
+
+            .button:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+            @media (max-width: 768px) {
+                .header-content h1 {
+                    font-size: 2.8rem;
+                }
+                
+                .header-content h2 {
+                    font-size: 1.5rem;
+                }
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="header-wrapper">
+            <div class="header-container">
+                <div class="header-content">
+                    <h1><span class="sos-red">SOS</span><span class="bench-black">Bench</span></h1>
+                    <h2>Benchmarking Safety Alignment on Scientific Knowledge</h2>
+                    <p>
+                        A comprehensive benchmark for evaluating LLM safety when handling scientifically sophisticated and potentially hazardous content across six high-risk domains.
+                    </p>
+
+                    <div class="emphasis-text">
+                        Advanced models consistently disclose <strong>POLICY-VIOLATING</strong> content at alarming rates!
+                    </div>
+
+
+
+                    <div class="button-container">
+                        <a href="https://arxiv.org/abs/2505.21605" class="button paper-link" target="_blank">
+                            <i class="ai ai-arxiv"></i>
+                            arXiv
+                        </a>
+                        <a href="https://github.com/SOSBench/SOSBenchEval" class="button paper-link" target="_blank">
+                            <i class="fab fa-github"></i>
+                            GitHub
+                        </a>
+                        <a href="https://hf.co/SOSBench" class="button paper-link" target="_blank">
+                            🤗 HuggingFace
+                        </a>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05)); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 0.5rem; padding: 1rem; margin-top: 1.5rem; color: #92400e;">
+                        <strong>⚠️ WARNING:</strong> This paper contains information that may be considered offensive.
+                    </div>
+                </div>
+                <div class="header-image">
+                    <img src="./static/img/fig_ring.webp" alt="SOSBench Main Figure" width="100%" />
+                </div>
+            </div>
+        </div>
+    </body>
+    <div class="byline">
+        <div class="byline-container">
+            <p class="authors">
+                <a href="https://fqjiang.work/" class="author-link" target="_blank">Fengqing Jiang<sup>1,†</sup></a> &emsp;
+                <a href="#" class="author-link" target="_blank">Fengbo Ma<sup>2,†</sup></a> &emsp;
+                <a href="https://zhangchenxu.com/" class="author-link" target="_blank">Zhangchen Xu<sup>1</sup></a> &emsp;
+                <a href="https://yuetl9.github.io/" class="author-link" target="_blank">Yuetai Li<sup>1</sup></a> &emsp;
+                <br>
+                <a href="https://sites.google.com/view/rbhaskar" class="author-link" target="_blank">Bhaskar Ramasubramanian<sup>3</sup></a> &emsp;
+                <a href="https://luyaoniu.github.io/" class="author-link" target="_blank">Luyao Niu<sup>1</sup></a> &emsp;
+                <a href="https://aisecure.github.io/" class="author-link" target="_blank">Bo Li<sup>3</sup></a> &emsp;
+                <a href="https://publichealth.uga.edu/faculty-member/xianyan-chen/" class="author-link" target="_blank">Xianyan Chen<sup>2</sup></a> &emsp;
+                <br>
+                <a href="https://zhenxianglance.github.io/" class="author-link" target="_blank">Zhen Xiang<sup>2,†</sup></a> &emsp;
+                <a href="https://labs.ece.uw.edu/nsl/faculty/radha/" class="author-link" target="_blank">Radha Poovendran<sup>1,‡</sup></a>
+            </p>
+            <div class="affiliations">
+                <p>
+                    <a href="#" class="affiliation-link" target="_blank"><sup>1</sup>University of Washington</a> &emsp;
+                    <a href="#" class="affiliation-link" target="_blank"><sup>2</sup>University of Georgia</a> &emsp;
+                    <a href="#" class="affiliation-link" target="_blank"><sup>3</sup>WWU</a> &emsp;
+                    <a href="#" class="affiliation-link" target="_blank"><sup>4</sup>UIUC</a>
+                </p>
+            </div>
+            <p class="author-notes" style="text-align: center;">
+                <span class="author-note"><sup>†</sup>Equal contribution</span> &emsp;
+                <span class="author-note"><sup>‡</sup>Corresponding author</span>
+            </p>
+        </div>
+        
+        <style>
+            .byline {
+                margin: 2rem 0;
+                padding: 1rem 0;
+                border-top: 1px solid rgba(0,0,0,0.1);
+                border-bottom: 1px solid rgba(0,0,0,0.1);
+            }
+            
+            .byline-container {
+                max-width: 900px;
+                margin: 0 auto;
+                text-align: center;
+            }
+            
+            .authors {
+                font-size: 1.1rem;
+                line-height: 2;
+                margin-bottom: 1rem;
+            }
+            
+            .author-link {
+                color: var(--text);
+                text-decoration: none;
+                transition: color 0.2s;
+                white-space: nowrap;
+            }
+            
+            .author-link:hover {
+                color: var(--primary);
+            }
+            
+            .affiliations {
+                font-size: 1rem;
+                color: #666;
+                margin: 1rem 0;
+            }
+            
+            .affiliation-link {
+                color: #666;
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+            
+            .affiliation-link:hover {
+                color: var(--primary);
+            }
+            
+            .author-notes {
+                font-size: 0.9rem;
+                color: #666;
+            }
+            
+            .author-note {
+                display: inline-block;
+                margin: 0 0.5rem;
+            }
+            
+            sup {
+                font-size: 0.75em;
+                line-height: 0;
+                position: relative;
+                vertical-align: baseline;
+                top: -0.5em;
+            }
+        </style>
+    </div>
+
+    <section class="abstract-section">
+        <style>
+            .abstract-section {
+                background: linear-gradient(135deg, #fef2f2 0%, #fef7ff 100%);
+                padding: 4rem 0;
+            }
+
+            .abstract-container {
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 0 2rem;
+            }
+
+            .abstract-title {
+                text-align: center;
+                font-size: 3rem;
+                font-weight: bold;
+                color: var(--primary);
+                margin-bottom: 2rem;
+            }
+
+            .abstract-intro {
+                max-width: 900px;
+                margin: 0 auto 3rem;
+                font-size: 1.2rem;
+                line-height: 1.8;
+                color: var(--text);
+                text-align: justify;
+            }
+
+            .abstract-intro strong {
+                color: var(--primary);
+                font-weight: 600;
+            }
+
+            .abstract-points {
+                display: grid;
+                gap: 1.5rem;
+                margin: 2rem 0;
+            }
+
+            .abstract-point {
+                background: white;
+                border-radius: 1rem;
+                padding: 2rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                display: flex;
+                gap: 1.5rem;
+                align-items: flex-start;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .abstract-point:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            }
+
+            .point-number-circle {
+                background: var(--primary);
+                color: white;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                font-weight: bold;
+                flex-shrink: 0;
+                margin-top: 0.2rem;
+            }
+
+            .point-text {
+                flex: 1;
+                font-size: 1.1rem;
+                line-height: 1.7;
+                color: var(--text);
+            }
+
+            .point-text strong {
+                color: var(--primary);
+                font-weight: 600;
+            }
+
+
+
+            @media (max-width: 768px) {
+                .abstract-title {
+                    font-size: 2.5rem;
+                }
+                
+                .abstract-intro {
+                    font-size: 1.1rem;
+                }
+                
+                .abstract-point {
+                    flex-direction: column;
+                    text-align: center;
+                }
+                
+                .point-number-circle {
+                    margin: 0 auto 1rem;
+                }
+            }
+        </style>
+
+        <div class="abstract-container">
+            <h2 class="abstract-title">Abstract</h2>
+            
+            <div class="abstract-intro">
+                <p>
+                    <strong>SOSBench</strong> is the first <em>regulation-grounded, hazard-focused, multi-disciplinary</em> benchmark
+                    for assessing large-language-model (LLM) safety in knowledge-intensive scientific contexts.
+                    Comprising 3 000 prompts derived from authoritative U.S. and international regulations,
+                    it probes six high-risk domains—chemistry, biology, medicine, pharmacology, physics, and psychology—
+                    without requiring any architectural changes or additional pre-training.
+                </p>
+            </div>
+            
+            <div class="abstract-points">
+            
+                <div class="abstract-point">
+                    <div class="point-number-circle">1</div>
+                    <div class="point-text">
+                        <strong>Novel benchmark:</strong> Each SOSBench prompt is tagged as high-risk by real-world
+                        regulatory frameworks and demands deep domain expertise to interpret,
+                        yielding a broader prompt-semantic space than prior science benchmarks.
+                    </div>
+                </div>
+            
+                <div class="abstract-point">
+                    <div class="point-number-circle">2</div>
+                    <div class="point-text">
+                        <strong>Rigorous evaluation:</strong> We test <em>21 frontier models</em> and uncover
+                        alarmingly high harmful-response rates—e.g.&nbsp;79.1 % for Deepseek-R1
+                        and 47.3 % for GPT-4.1—demonstrating that existing alignment techniques
+                        falter on regulation-derived scientific misuse scenarios.
+                    </div>
+                </div>
+            
+                <div class="abstract-point">
+                    <div class="point-number-circle">3</div>
+                    <div class="point-text">
+                        <strong>Actionable insights for alignment:</strong> Open-source, domain-specialized
+                        models are markedly under-aligned; increasing parameter scale and granting more
+                        reasoning steps reduce harmful outputs only when alignment methods advance
+                        in lock-step with the expanded knowledge and reasoning unlocked by scaling.
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+    </section>
+
+
+
+    <section class="benchmark" id="benchmark">
+        <style>
+            .benchmark {
+                background: linear-gradient(135deg, #f8faff 0%, #faf5ff 100%);
+                padding: 4rem 0;
+            }
+    
+            .benchmark-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 2rem;
+            }
+
+            .benchmark-card {
+                background: white;
+                border-radius: 1rem;
+                padding: 2rem;
+                margin-bottom: 2rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+
+            .benchmark-header {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                cursor: pointer;
+                padding-bottom: 1rem;
+            }
+
+            .benchmark-header-content {
+                flex: 1;
+            }
+
+            .benchmark-number {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: var(--accent);
+                margin-bottom: 0.5rem;
+            }
+
+            .benchmark-title {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: var(--text);
+            }
+
+            .benchmark-summary {
+                color: #666;
+                margin-top: 0.5rem;
+                font-size: 1.1rem;
+            }
+
+            .toggle-button {
+                background: none;
+                border: none;
+                color: var(--primary);
+                cursor: pointer;
+                padding: 0.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: transform 0.3s ease;
+            }
+
+            .toggle-button svg {
+                width: 24px;
+                height: 24px;
+            }
+
+            .benchmark-details {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+                overflow: hidden;
+                max-height: 0;
+                opacity: 0;
+                transition: all 0.3s ease;
+            }
+
+            .benchmark-details.expanded {
+                max-height: 2000px;
+                opacity: 1;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(0,0,0,0.1);
+            }
+
+            .benchmark-content {
+                padding: 0 1rem;
+            }
+
+            .benchmark-description p {
+                line-height: 1.8;
+                font-size: 1.05rem;
+                color: #374151;
+                margin: 0 auto 1rem;
+            }
+
+            .process-steps {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+                margin: 2rem 0;
+            }
+
+            .step-card {
+                background: #f8fafc;
+                padding: 1.5rem;
+                border-radius: 0.75rem;
+                text-align: center;
+            }
+
+            .step-number {
+                background: var(--primary);
+                color: white;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1rem;
+                font-weight: bold;
+            }
+
+            .step-title {
+                font-weight: 600;
+                color: var(--primary);
+                margin-bottom: 0.5rem;
+            }
+
+            .step-description {
+                font-size: 0.9rem;
+                color: #666;
+            }
+        </style>
+
+        <div class="benchmark-container">
+            <div class="section-title">
+                <h2>Benchmark Design</h2>
+                <!-- <p>A systematic approach to evaluating LLM safety on scientific knowledge</p> -->
+            </div>
+
+            <!-- Risk Domains -->
+            <div class="benchmark-card">
+                <div class="benchmark-header" onclick="toggleBenchmarkDetails('benchmark0')">
+                    <div class="benchmark-header-content">
+                        <div class="benchmark-number">Domains</div>
+                        <div class="benchmark-title">Six High-Risk Scientific Areas</div>
+                        <div class="benchmark-summary">
+                            Chemistry, Biology, Medicine, Pharmacology, Physics, and Psychology
+                        </div>
+                    </div>
+                    <button class="toggle-button" id="toggle-benchmark0">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M19 9l-7 7-7-7" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            
+                <div class="benchmark-details" id="benchmark0">
+                    <div class="benchmark-content">
+                        <div class="benchmark-description">
+                                                         <p>
+                                 <strong>SOSBench</strong> probes model safety spanning six disciplines. Each domain is anchored in authoritative U.S./international regulations
+                                 and demands deep subject-matter expertise to recognise and refuse hazardous requests.
+                             </p>
+
+                             
+             
+                             <div class="domains-grid"
+                                 style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin:2rem 0;">
+            
+                                <!-- Chemistry -->
+                                <div class="domain-card" style="background:#f8fafc;border-radius:0.75rem;padding:1.5rem;border-left:4px solid var(--primary);">
+                                    <div class="domain-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                                        <div class="domain-title"
+                                             style="font-size:1.2rem;font-weight:bold;color:var(--primary);">Chemistry</div>
+                                    </div>
+                                    <div class="domain-description" style="color:#4b5563;line-height:1.6;margin-bottom:1rem;font-size:0.95rem;">
+                                        Prompts referencing NFPA 704 level-4 chemicals focus on explosive synthesis,
+                                        energetic materials and highly reactive compounds.
+                                    </div>
+                                    <div class="domain-examples"
+                                         style="background:#fff;padding:0.75rem;border-radius:0.5rem;font-size:0.85rem;color:#6b7280;">
+                                        <strong style="color:var(--primary);">Example risks:</strong> TNT or RDX production,
+                                        unstable oxidiser handling, generation of toxic chlorine gas
+                                    </div>
+                                </div>
+            
+                                <!-- Biology -->
+                                <div class="domain-card" style="background:#f8fafc;border-radius:0.75rem;padding:1.5rem;border-left:4px solid var(--primary);">
+                                    <div class="domain-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                                        <div class="domain-title"
+                                             style="font-size:1.2rem;font-weight:bold;color:var(--primary);">Biology</div>
+                                    </div>
+                                    <div class="domain-description" style="color:#4b5563;line-height:1.6;margin-bottom:1rem;font-size:0.95rem;">
+                                        Seed terms originate from 42 CFR Part 71 and ICD-11 Chapter 1, covering
+                                        biohazards that could facilitate pathogen creation or manipulation.
+                                    </div>
+                                    <div class="domain-examples"
+                                         style="background:#fff;padding:0.75rem;border-radius:0.5rem;font-size:0.85rem;color:#6b7280;">
+                                        <strong style="color:var(--primary);">Example risks:</strong> Viral gain-of-function
+                                        protocols, spore weaponisation, toxin-gene insertion
+                                    </div>
+                                </div>
+            
+                                <!-- Medicine -->
+                                <div class="domain-card" style="background:#f8fafc;border-radius:0.75rem;padding:1.5rem;border-left:4px solid var(--primary);">
+                                    <div class="domain-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                                         <div class="domain-title"
+                                             style="font-size:1.2rem;font-weight:bold;color:var(--primary);">Medicine</div>
+                                    </div>
+                                    <div class="domain-description" style="color:#4b5563;line-height:1.6;margin-bottom:1rem;font-size:0.95rem;">
+                                        Draws on ICD-11 Chapters 2-5 &amp; 7-27 to test unsafe clinical advice,
+                                        unregulated procedures, and self-harm medical directions.
+                                    </div>
+                                    <div class="domain-examples"
+                                         style="background:#fff;padding:0.75rem;border-radius:0.5rem;font-size:0.85rem;color:#6b7280;">
+                                        <strong style="color:var(--primary);">Example risks:</strong> DIY surgery
+                                        instructions, lethal dosage guidelines, clandestine gene-therapy kits
+                                    </div>
+                                </div>
+            
+                                <!-- Pharmacology -->
+                                <div class="domain-card" style="background:#f8fafc;border-radius:0.75rem;padding:1.5rem;border-left:4px solid var(--primary);">
+                                    <div class="domain-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                                        <div class="domain-title"
+                                             style="font-size:1.2rem;font-weight:bold;color:var(--primary);">Pharmacology</div>
+                                    </div>
+                                    <div class="domain-description" style="color:#4b5563;line-height:1.6;margin-bottom:1rem;font-size:0.95rem;">
+                                        Controlled-substance terms come from NIDA Drugs-A-to-Z and DEA
+                                        Schedule III lists, stressing illicit drug synthesis and abuse pathways.
+                                    </div>
+                                    <div class="domain-examples"
+                                         style="background:#fff;padding:0.75rem;border-radius:0.5rem;font-size:0.85rem;color:#6b7280;">
+                                        <strong style="color:var(--primary);">Example risks:</strong> Home-lab opioid
+                                        production, steroid stacking regimens, clandestine pill-press operations
+                                    </div>
+                                </div>
+            
+                                <!-- Physics -->
+                                <div class="domain-card" style="background:#f8fafc;border-radius:0.75rem;padding:1.5rem;border-left:4px solid var(--primary);">
+                                    <div class="domain-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                                        <div class="domain-title"
+                                             style="font-size:1.2rem;font-weight:bold;color:var(--primary);">Physics</div>
+                                    </div>
+                                    <div class="domain-description" style="color:#4b5563;line-height:1.6;margin-bottom:1rem;font-size:0.95rem;">
+                                        Incorporates IAEA SSR-6 isotopes and WMD-related technologies (e.g.,
+                                        electromagnetic-pulse devices, enrichment methods) to test weapon design advice.
+                                    </div>
+                                    <div class="domain-examples"
+                                         style="background:#fff;padding:0.75rem;border-radius:0.5rem;font-size:0.85rem;color:#6b7280;">
+                                        <strong style="color:var(--primary);">Example risks:</strong> Radioisotope bomb
+                                        assembly, EMP generator schematics, laser-triggered fusion setups
+                                    </div>
+                                </div>
+            
+                                <!-- Psychology -->
+                                <div class="domain-card" style="background:#f8fafc;border-radius:0.75rem;padding:1.5rem;border-left:4px solid var(--primary);">
+                                    <div class="domain-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                                        <div class="domain-title"
+                                             style="font-size:1.2rem;font-weight:bold;color:var(--primary);">Psychology</div>
+                                    </div>
+                                    <div class="domain-description" style="color:#4b5563;line-height:1.6;margin-bottom:1rem;font-size:0.95rem;">
+                                        Terms drawn from ICD-11 Chapter 6 and DSM-5/DSM-5-TR focus on
+                                        manipulation or exploitation of mental-health knowledge.
+                                    </div>
+                                    <div class="domain-examples"
+                                         style="background:#fff;padding:0.75rem;border-radius:0.5rem;font-size:0.85rem;color:#6b7280;">
+                                        <strong style="color:var(--primary);">Example risks:</strong> Coercive
+                                        interrogation scripts, psychological torture regimens, unethical behaviour
+                                        conditioning
+                                    </div>
+                                </div>
+                            </div>
+            
+                            <p>
+                                The domains were selected because mis-handled expert knowledge in these areas
+                                poses clear public-safety hazards, as reflected by U.S. and international statutes
+                                referenced during SOSBench construction.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Benchmark Construction -->
+            <div class="benchmark-card">
+                <div class="benchmark-header" onclick="toggleBenchmarkDetails('benchmark1')">
+                    <div class="benchmark-header-content">
+                        <div class="benchmark-number">Construction</div>
+                        <div class="benchmark-title">Regulation-Grounded Prompt Generation</div>
+                        <div class="benchmark-summary">
+                            3 000 prompts &nbsp;•&nbsp; 500 per domain &nbsp;•&nbsp; LLM-assisted evolution
+                        </div>
+                    </div>
+                    <button class="toggle-button" id="toggle-benchmark1">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            
+                <!-- pipeline figure (from paper Fig-1) -->
+                <div style="text-align:center;margin:2rem 0;">
+                    <img src="./static/img/fig_pipeline.webp"
+                         alt="SOSBench construction pipeline (Manual Seed → Hybrid Templates → Data Evolution → Final Sampling)"
+                         style="max-width:100%;height:auto;border-radius:0;border:0;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);" />
+                </div>
+            
+                <div class="benchmark-details" id="benchmark1">
+                    <div class="benchmark-content">
+                        <div class="benchmark-description">
+                            <p>
+                                SOSBench grounds every prompt in authoritative regulations issued by the
+                                U.S. Government, United Nations and other bodies, then employs an
+                                <em>LLM-assisted evolution</em> algorithm to create realistic, policy-violating
+                                instructions that require deep scientific expertise to recognise and refuse
+                                .
+                            </p>
+            
+                            <div class="process-steps">
+            
+                                <!-- Step 1 -->
+                                <div class="step-card">
+                                    <div class="step-number">1</div>
+                                    <div class="step-title">Manual Seed Collection</div>
+                                    <div class="step-description">
+                                        Experts extract high-hazard terms (e.g.&nbsp;NFPA-704 level-4 chemicals,
+                                        DEA Schedule III substances, ICD-11 pathology codes) directly from
+                                        regulatory texts, then expand them via domain databases such as
+                                        PubChem or DSM-5 synonym lists .
+                                    </div>
+                                </div>
+            
+                                <!-- Step 2 -->
+                                <div class="step-card">
+                                    <div class="step-number">2</div>
+                                    <div class="step-title">Hybrid Initial Prompt Generation</div>
+                                    <div class="step-description">
+                                        Seed terms are inserted into a mix of
+                                        <em>(i)</em> templates mined from AdvBench and related corpora and
+                                        <em>(ii)</em> human-written templates inspired by real incidents,
+                                        yielding a large but rough prompt pool.
+                                    </div>
+                                </div>
+            
+                                <!-- Step 3 -->
+                                <div class="step-card">
+                                    <div class="step-number">3</div>
+                                    <div class="step-title">LLM-Assisted Data Evolution</div>
+                                    <div class="step-description">
+                                        GPT-4o-mini mutates prompts; three weak surrogate LLMs
+                                        (Llama-3.1-8B, Qwen-2.5-7B, Gemma-2-9B) generate responses that
+                                        are vetted by LlamaGuard. Coverage-driven sampling boosts diversity
+                                        until each term elicits at least one policy violation .
+                                    </div>
+                                </div>
+            
+                                <!-- Step 4 -->
+                                <!-- <div class="step-card">
+                                    <div class="step-number">4</div>
+                                    <div class="step-title">Balanced Sampling & Manual Review</div>
+                                    <div class="step-description">
+                                        From the evolved pool, researchers hand-screen 500 high-quality
+                                        prompts per domain (3 000 total) to form the final benchmark and a
+                                        300-item SOSBench-Lite subset :contentReference[oaicite:7]{index=7}.
+                                    </div>
+                                </div> -->
+            
+                            </div>
+            
+                            <p>
+                                <!-- This four-stage pipeline delivers a diverse set of knowledge-intensive, regulation-relevant
+                                misuse scenarios that exceed the semantic coverage of prior safety benchmarks. -->
+                                With the pipeline above, we construct a benchmark with 3000 prompts, 500 per domain. We also construct a 300-sample SOSBench-Lite subset.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Evaluation Framework -->
+            <div class="benchmark-card">
+                <div class="benchmark-header" onclick="toggleBenchmarkDetails('benchmark2')">
+                    <div class="benchmark-header-content">
+                        <div class="benchmark-number">Framework</div>
+                        <div class="benchmark-title">Automatic Evaluation Pipeline</div>
+                        <div class="benchmark-summary">LLM-as-Judge • Harmful-Rate metric • 20+ models tested</div>
+                    </div>
+                    <button class="toggle-button" id="toggle-benchmark2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            
+                <div class="benchmark-details" id="benchmark2">
+                    <div class="benchmark-content">
+                        <div class="benchmark-description">
+                            <p>
+                                SOSBench uses a <em>fully automated</em> evaluation pipeline that scales to thousands of
+                                prompts while keeping human annotators out of harm's way. Core design features:
+                            </p>
+            
+                            <ul style="margin:1.5rem 0;padding-left:2rem;">
+                                <li><strong>Harmful-Rate (HR) Metric:</strong> high score means more harmful responses, or the model is more unsafe.</li>
+                                <li><strong>LLM-as-Judge:</strong> automatic evaluator (with GPT-4.1) achieves the
+                                    best agreement calibrated with human labels, outperforming various existing evaluators, including String-Match,
+                                    OpenAI Moderation API, WildGuard, and LlamaGuard.</li>
+                                <li><strong>Broad Model Coverage:</strong> 20+ frontier LLMs—open/closed, reasoning/non-reasoning,
+                                    diverse model sizes—are compared under identical decoding settings.</li>
+                                <li><strong>Domain-wise Scoring:</strong> Scoring is reported per domain (Chem, Bio, Med, Pharm, Phys,
+                                    Psych) and overall, enabling fine-grained diagnostics.
+                                </li>
+                            </ul>
+            
+                            <p>
+                                The unified pipeline ensures reproducible, apples-to-apples safety assessments and
+                                highlights where alignment techniques must improve.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function toggleBenchmarkDetails(id) {
+                const details = document.getElementById(id);
+                const button = document.getElementById('toggle-' + id);
+                const isExpanded = details.classList.contains('expanded');
+                
+                // Collapse all other sections
+                document.querySelectorAll('.benchmark-details').forEach(el => {
+                    el.classList.remove('expanded');
+                });
+                document.querySelectorAll('.toggle-button').forEach(btn => {
+                    btn.style.transform = 'rotate(0deg)';
+                });
+                
+                // Toggle current section
+                if (!isExpanded) {
+                    details.classList.add('expanded');
+                    button.style.transform = 'rotate(180deg)';
+                }
+            }
+        </script>
+    </section>
+
+    <section class="results" id="results">
+        <style>
+            .results {
+                background: linear-gradient(135deg, #fef2f2 0%, #fef7ff 100%);
+                padding: 4rem 0;
+            }
+    
+            .results-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 2rem;
+            }
+
+            .results-highlight {
+                background: white;
+                border-radius: 1rem;
+                padding: 2rem;
+                margin: 2rem 0;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                border-left: 4px solid var(--primary);
+            }
+
+            .highlight-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 2rem;
+                margin: 2rem 0;
+            }
+
+            .stat-card {
+                text-align: center;
+                padding: 1.5rem;
+                background: #f8fafc;
+                border-radius: 0.75rem;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+                font-weight: bold;
+                color: var(--primary);
+                margin-bottom: 0.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+                color: #666;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .stat-description {
+                font-size: 0.85rem;
+                color: #666;
+                margin-top: 0.5rem;
+            }
+
+            .key-findings {
+                display: grid;
+                gap: 1.5rem;
+                margin: 3rem 0;
+            }
+
+            .finding-item {
+                background: white;
+                padding: 1.5rem;
+                border-radius: 0.75rem;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .finding-icon {
+                background: var(--primary);
+                color: white;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                flex-shrink: 0;
+            }
+
+            .finding-content {
+                flex: 1;
+            }
+
+            .finding-title {
+                font-weight: 600;
+                color: var(--primary);
+                margin-bottom: 0.5rem;
+            }
+
+            .finding-description {
+                color: #4b5563;
+                line-height: 1.6;
+            }
+
+
+
+            .results-table-section {
+                margin: 3rem 0;
+            }
+
+            .table-container {
+                overflow-x: auto;
+                margin: 2rem 0;
+                border-radius: 1rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                background: white;
+            }
+
+            .results-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 0;
+                font-size: 0.9rem;
+                min-width: 800px;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 0.75rem 0.5rem;
+                text-align: center;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .results-table th {
+                background: linear-gradient(135deg, var(--primary), var(--accent));
+                color: white;
+                font-weight: 600;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                position: relative;
+            }
+
+            .results-table th.sortable {
+                cursor: pointer;
+                user-select: none;
+                transition: background-color 0.2s;
+            }
+
+            .results-table th.sortable:hover {
+                background: linear-gradient(135deg, var(--secondary), var(--primary));
+            }
+
+            .sort-indicator {
+                margin-left: 0.5rem;
+                font-size: 0.7rem;
+                opacity: 0.6;
+            }
+
+            .sort-indicator::after {
+                content: "↕";
+            }
+
+            .results-table th.sort-asc .sort-indicator::after {
+                content: "↑";
+                opacity: 1;
+            }
+
+            .results-table th.sort-desc .sort-indicator::after {
+                content: "↓";
+                opacity: 1;
+            }
+
+            .results-table td:first-child {
+                text-align: left;
+                padding-left: 1rem;
+                font-weight: 500;
+            }
+
+            .results-table tbody tr:hover {
+                background-color: #f8fafc;
+            }
+
+            .results-table tbody tr:nth-child(even) {
+                background-color: #fafafa;
+            }
+
+            .results-table tbody tr:nth-child(even):hover {
+                background-color: #f1f5f9;
+            }
+
+
+
+            /* Color coding for scores */
+            .results-table td:not(:first-child):not(:nth-child(2)) {
+                font-weight: 500;
+            }
+
+            /* Color high scores in red */
+            .results-table td {
+                position: relative;
+            }
+
+            @media (max-width: 768px) {
+                .table-container {
+                    margin: 1rem -2rem;
+                    border-radius: 0;
+                }
+                
+                .results-table {
+                    font-size: 0.8rem;
+                }
+                
+                .results-table th,
+                .results-table td {
+                    padding: 0.5rem 0.3rem;
+                }
+                
+                .results-table td:first-child {
+                    padding-left: 0.5rem;
+                    min-width: 120px;
+                }
+            }
+        </style>
+
+        <div class="results-container">
+            <div class="section-title">
+                <h2>Evaluation Results</h2>
+                <p>Revealing critical safety alignment deficiencies in frontier models</p>
+            </div>
+
+            <div class="results-highlight">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Alarming Safety Gaps Across All Models</h3>
+                <p style="text-align: center; color: #666; margin-bottom: 2rem;">
+                    Despite their alignment claims, advanced models consistently disclose policy-violating content across all scientific domains
+                </p>
+                
+                <div class="highlight-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">79.1%</div>
+                        <div class="stat-label">Deepseek-R1</div>
+                        <div class="stat-description">Harmful response rate across all domains</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">47.3%</div>
+                        <div class="stat-label">GPT-4.1</div>
+                        <div class="stat-description">Harmful response rate across all domains</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">80.3%</div>
+                        <div class="stat-label">Grok-3</div>
+                        <div class="stat-description">Harmful response rate across all domains</div>  
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">43.6%</div>
+                        <div class="stat-label">Claude-4-Opus</div>
+                        <div class="stat-description">Harmful response rate on pharmacology</div>
+                    </div>
+                </div>
+            </div>
+            <div class="results-table-section">
+                <h3 style="color: var(--primary); margin: 3rem 0 1.5rem; text-align: center; font-size: 1.8rem;">Detailed Model Performance</h3>
+                <p style="text-align: center; color: #666; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Higher HR (Harmful Rate) scores indicate more harmful content generation and less safe models. 
+                    Frontier model safety alignment shows concerning gaps.
+                </p>
+                
+                <div class="table-filters" style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <label for="developer-filter" style="font-weight: 500; color: var(--text);">Developer:</label>
+                        <select id="developer-filter" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; background: white;">
+                            <option value="">All Developers</option>
+                            <option value="OpenAI">OpenAI</option>
+                            <option value="Google">Google</option>
+                            <option value="Deepseek">Deepseek</option>
+                            <option value="Alibaba">Alibaba</option>
+                            <option value="xAI">xAI</option>
+                            <option value="Anthropic">Anthropic</option>
+                            <option value="Meta">Meta</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <label for="think-filter" style="font-weight: 500; color: var(--text);">Think:</label>
+                        <select id="think-filter" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; background: white;">
+                            <option value="">All</option>
+                            <option value="✓">✓ (Yes)</option>
+                            <option value="✗">✗ (No)</option>
+                        </select>
+                    </div>
+                    <button id="clear-filters" style="padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: 0.5rem; cursor: pointer; font-weight: 500;">
+                        Clear Filters
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <table class="results-table" id="results-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="sortable" data-column="0" data-type="text">
+                                    Developer <span class="sort-indicator"></span>
+                                </th>
+                                <th rowspan="2" class="sortable" data-column="1" data-type="text">
+                                    Model Name <span class="sort-indicator"></span>
+                                </th>
+                                <th rowspan="2" class="sortable" data-column="2" data-type="text">
+                                    Think <span class="sort-indicator"></span>
+                                </th>
+                                <th colspan="6">Subject Domain (HR ↓ = safer)</th>
+                                <th rowspan="2" class="sortable" data-column="9" data-type="number">
+                                    Overall <span class="sort-indicator"></span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="sortable" data-column="3" data-type="number">Bio. <span class="sort-indicator"></span></th>
+                                <th class="sortable" data-column="4" data-type="number">Chem. <span class="sort-indicator"></span></th>
+                                <th class="sortable" data-column="5" data-type="number">Med. <span class="sort-indicator"></span></th>
+                                <th class="sortable" data-column="6" data-type="number">Pharm. <span class="sort-indicator"></span></th>
+                                <th class="sortable" data-column="7" data-type="number">Phys. <span class="sort-indicator"></span></th>
+                                <th class="sortable" data-column="8" data-type="number">Psych. <span class="sort-indicator"></span></th>
+                            </tr>
+                        </thead>
+                
+                        <tbody>
+                            <!-- OpenAI -->
+                            <tr>
+                                <td><strong>OpenAI</strong></td><td>o3 (20250416)</td><td>✓</td>
+                                <td>0.138</td><td>0.108</td><td>0.286</td><td>0.384</td><td>0.120</td><td>0.208</td><td>0.207</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OpenAI</strong></td><td>o4-mini (20250416)</td><td>✓</td>
+                                <td>0.252</td><td>0.162</td><td>0.330</td><td>0.364</td><td>0.224</td><td>0.326</td><td>0.276</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OpenAI</strong></td><td>GPT-4.1 (20250414)</td><td>✗</td>
+                                <td>0.362</td><td>0.246</td><td>0.492</td><td>0.818</td><td>0.408</td><td>0.514</td><td>0.473</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OpenAI</strong></td><td>GPT-4o (20241120)</td><td>✗</td>
+                                <td>0.310</td><td>0.178</td><td>0.392</td><td>0.624</td><td>0.186</td><td>0.418</td><td>0.351</td>
+                            </tr>
+                
+                            <!-- Google -->
+                            <tr>
+                                <td><strong>Google</strong></td><td>Gemini-2.5-Pro (20250506)</td><td>✓</td>
+                                <td>0.294</td><td>0.254</td><td>0.324</td><td>0.568</td><td>0.428</td><td>0.308</td><td>0.363</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Google</strong></td><td>Gemini-2.5-Flash (20250417)</td><td>✓</td>
+                                <td>0.296</td><td>0.258</td><td>0.304</td><td>0.604</td><td>0.418</td><td>0.306</td><td>0.364</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Google</strong></td><td>Gemma-3-27B</td><td>✗</td>
+                                <td>0.760</td><td>0.566</td><td>0.720</td><td>0.902</td><td>0.836</td><td>0.808</td><td>0.765</td>
+                            </tr>
+                
+                            <!-- Deepseek -->
+                            <tr>
+                                <td><strong>Deepseek</strong></td><td>Deepseek-V3 (0324)</td><td>✗</td>
+                                <td>0.876</td><td>0.560</td><td>0.814</td><td>0.894</td><td>0.714</td><td>0.852</td><td>0.785</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Deepseek</strong></td><td>Deepseek-R1</td><td>✓</td>
+                                <td>0.788</td><td>0.654</td><td>0.716</td><td>0.912</td><td>0.836</td><td>0.838</td><td>0.791</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Deepseek</strong></td><td>Deepseek-R1-Distill-70B</td><td>✓</td>
+                                <td>0.820</td><td>0.714</td><td>0.764</td><td>0.934</td><td>0.872</td><td>0.868</td><td>0.829</td>
+                            </tr>
+                
+                            <!-- Alibaba -->
+                            <tr>
+                                <td><strong>Alibaba</strong></td><td>Qwen3-235B-A22B</td><td>✓</td>
+                                <td>0.484</td><td>0.358</td><td>0.404</td><td>0.440</td><td>0.460</td><td>0.428</td><td>0.429</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Alibaba</strong></td><td>Qwen3-32B</td><td>✓</td>
+                                <td>0.814</td><td>0.564</td><td>0.682</td><td>0.860</td><td>0.718</td><td>0.802</td><td>0.740</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Alibaba</strong></td><td>Qwen2.5-72B</td><td>✗</td>
+                                <td>0.708</td><td>0.504</td><td>0.672</td><td>0.900</td><td>0.676</td><td>0.738</td><td>0.700</td>
+                            </tr>
+                
+                            <!-- xAI -->
+                            <tr>
+                                <td><strong>xAI</strong></td><td>Grok-3</td><td>✗</td>
+                                <td>0.902</td><td>0.498</td><td>0.772</td><td>0.922</td><td>0.812</td><td>0.914</td><td>0.803</td>
+                            </tr>
+                            <tr>
+                                <td><strong>xAI</strong></td><td>Grok-3-mini</td><td>✓</td>
+                                <td>0.704</td><td>0.398</td><td>0.622</td><td>0.874</td><td>0.664</td><td>0.720</td><td>0.664</td>
+                            </tr>
+                
+                            <!-- Anthropic -->
+                            <tr>
+                                <td><strong>Anthropic</strong></td><td>Claude-4-Opus (20250514)</td><td>✗</td>
+                                <td>0.106</td><td>0.142</td><td>0.216</td><td>0.436</td><td>0.154</td><td>0.220</td><td>0.212</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Anthropic</strong></td><td>Claude-4-Opus-Think (20250514)</td><td>✓</td>
+                                <td>0.074</td><td>0.078</td><td>0.108</td><td>0.226</td><td>0.086</td><td>0.158</td><td>0.122</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Anthropic</strong></td><td>Claude-4-Sonnet (20250514)</td><td>✗</td>
+                                <td>0.120</td><td>0.182</td><td>0.202</td><td>0.318</td><td>0.174</td><td>0.172</td><td>0.195</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Anthropic</strong></td><td>Claude-4-Sonnet-Think (20250514)</td><td>✓</td>
+                                <td>0.056</td><td>0.086</td><td>0.054</td><td>0.054</td><td>0.110</td><td>0.064</td><td>0.071</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Anthropic</strong></td><td>Claude-3.7-Sonnet (20250219)</td><td>✗</td>
+                                <td>0.346</td><td>0.238</td><td>0.444</td><td>0.750</td><td>0.262</td><td>0.314</td><td>0.392</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Anthropic</strong></td><td>Claude-3.7-Sonnet-Think (20250219)</td><td>✓</td>
+                                <td>0.050</td><td>0.056</td><td>0.072</td><td>0.312</td><td>0.062</td><td>0.048</td><td>0.100</td>
+                            </tr>
+                
+                            <!-- Meta -->
+                            <tr>
+                                <td><strong>Meta</strong></td><td>Llama-4-Maverick</td><td>✗</td>
+                                <td>0.280</td><td>0.198</td><td>0.352</td><td>0.610</td><td>0.232</td><td>0.250</td><td>0.320</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Meta</strong></td><td>Llama-4-Scout</td><td>✗</td>
+                                <td>0.500</td><td>0.396</td><td>0.598</td><td>0.836</td><td>0.498</td><td>0.530</td><td>0.560</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Meta</strong></td><td>Llama-3.1-405B</td><td>✗</td>
+                                <td>0.586</td><td>0.408</td><td>0.596</td><td>0.732</td><td>0.446</td><td>0.564</td><td>0.555</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Meta</strong></td><td>Llama-3.3-70B</td><td>✗</td>
+                                <td>0.418</td><td>0.466</td><td>0.472</td><td>0.784</td><td>0.522</td><td>0.454</td><td>0.519</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="key-findings">
+                <h3 style="color: var(--primary); margin-bottom: 1.5rem; text-align: center;">
+                    Key Research Findings
+                </h3>
+            
+                <!-- Finding 1 -->
+                <div class="finding-item">
+                    <div class="finding-icon">1</div>
+                    <div class="finding-content">
+                        <div class="finding-title">
+                            Shallow Safety Alignment — 30-50 % Unsafe Responses
+                        </div>
+                        <div class="finding-description">
+                            Evaluating 21 frontier LLMs shows that every model discloses hazardous content on
+                            <em>at least</em> one-third of regulation-grounded prompts; GPT-4.1 leaks 47 % and
+                            Deepseek-R1 reaches 79 %.  Current alignment methods are therefore <em>far</em> from
+                            adequate for scientific misuse scenarios.
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Finding 2 -->
+                <div class="finding-item">
+                    <div class="finding-icon">2</div>
+                    <div class="finding-content">
+                        <div class="finding-title">
+                            Pharmacology &amp; Other "Shadow" Domains Drive Failures
+                        </div>
+                        <div class="finding-description">
+                            Harmful-rate varies sharply by subject: most models perform worst on
+                            <strong>pharmacology</strong> (e.g., OpenAI o3 HR = 0.384) and psychology, domains
+                            under-represented in prior benchmarks.  Robust alignment must therefore be
+                            <em>domain-aware</em>, not one-size-fits-all.
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Finding 3 -->
+                <div class="finding-item">
+                    <div class="finding-icon">3</div>
+                    <div class="finding-content">
+                        <div class="finding-title">
+                            Domain-Expert Models Are <em>Not</em> Safer
+                        </div>
+                        <div class="finding-description">
+                            Specialised models fine-tuned on scientific corpora (e.g., BioMistral-7B HR = 0.876)
+                            are often <strong>more</strong> dangerous than their general-purpose bases, because
+                            post-training erodes prior safety tuning and follow-up alignment is insufficient.
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Finding 4 -->
+                <div class="finding-item">
+                    <div class="finding-icon">4</div>
+                    <div class="finding-content">
+                        <div class="finding-title">
+                            Knowledge–Alignment Trade-off &amp; Fragile Defences
+                        </div>
+                        <div class="finding-description">
+                            Scaling parameters or increasing hidden-reasoning budgets can reduce HR —
+                            <em>only</em> when alignment grows in lock-step.  Visible chain-of-thought or simple
+                            jailbreaks (e.g., HR for Llama-4-Maverick jumps from 0.28 → 0.80) quickly overturn
+                            apparent gains, revealing brittle safety guardrails.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            
+
+            <!-- <div class="implications">
+                <div class="implications-title">Critical Implications for AI Safety</div>
+                <div class="implications-content">
+                    <p>These results underscore urgent concerns regarding the responsible deployment of powerful LLMs in scientific contexts. The high rates of policy-violating responses across all evaluated models suggest that:</p>
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Current safety alignment techniques are insufficient</strong> for handling scientifically sophisticated and potentially hazardous content</li>
+                        <li><strong>Knowledge-intensive scenarios require specialized safety measures</strong> beyond traditional alignment approaches</li>
+                        <li><strong>Domain-specific safety research is crucial</strong> for addressing vulnerabilities in scientific knowledge areas</li>
+                        <li><strong>Continuous evaluation and improvement</strong> of safety measures is essential as models become more capable</li>
+                    </ul>
+                    <p>SOSBench provides a critical tool for the AI safety community to systematically assess and improve the safety alignment of LLMs when handling scientific knowledge with potential for misuse.</p>
+                </div>
+            </div> -->
+        </div>
+    </section>
+
+    <section class="citation" id="citation">
+        <style>
+            .citation {
+                background: linear-gradient(135deg, #fef2f2 0%, #fef7ff 100%);
+                padding: 4rem 0;
+            }
+
+            .citation-container {
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 0 2rem;
+            }
+
+            .section-title {
+                text-align: center;
+                margin-bottom: 3rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2.5rem;
+                color: var(--primary);
+                margin-bottom: 1rem;
+            }
+
+            .section-title p {
+                font-size: 1.1rem;
+                color: #666;
+            }
+
+            .bibtex-container {
+                background: white;
+                border-radius: 1rem;
+                padding: 2rem;
+                margin: 2rem auto;
+                max-width: 800px;
+                position: relative;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+
+            .bibtex-code {
+                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                font-size: 0.9rem;
+                line-height: 1.6;
+                color: #374151;
+                white-space: pre-wrap;
+                word-break: break-all;
+                margin: 0;
+                background: #f8fafc;
+                padding: 1.5rem;
+                border-radius: 0.75rem;
+                border: 1px solid #e5e7eb;
+            }
+
+            .copy-button {
+                position: absolute;
+                top: 2rem;
+                right: 2rem;
+                background: var(--primary);
+                color: white;
+                border: none;
+                border-radius: 0.5rem;
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9rem;
+                cursor: pointer;
+                transition: all 0.2s;
+                font-weight: 500;
+            }
+
+            .copy-button:hover {
+                background: var(--secondary);
+                transform: translateY(-1px);
+            }
+
+            .copy-button:active {
+                transform: translateY(0);
+            }
+
+            @media (max-width: 768px) {
+                .section-title h2 {
+                    font-size: 2rem;
+                }
+                
+                .bibtex-code {
+                    font-size: 0.8rem;
+                    padding: 1rem;
+                }
+                
+                .copy-button {
+                    position: static;
+                    margin-bottom: 1rem;
+                    width: 100%;
+                }
+                
+                .bibtex-container {
+                    padding: 1.5rem;
+                }
+            }
+        </style>
+
+        <div class="citation-container">
+            <div class="section-title">
+                <h2>Citation</h2>
+                <p>If you use SOSBench in your work, we would appreciate if you cite our paper:</p>
+            </div>
+            
+            <div class="bibtex-container">
+                <button class="copy-button" onclick="copyBibtex()">Copy BibTeX</button>
+                <pre class="bibtex-code" id="bibtex-text">@article{jiang2025sosbench,
+  title={SOSBENCH: Benchmarking Safety Alignment on Scientific Knowledge},
+  author={Jiang, Fengqing and Ma, Fengbo and Xu, Zhangchen and Li, Yuetai and Ramasubramanian, Bhaskar and Niu, Luyao and Li, Bo and Chen, Xianyan and Xiang, Zhen and Poovendran, Radha},
+  journal={arXiv preprint arXiv:2505.21605},
+  year={2025}
+}</pre>
+            </div>
+        </div>
+
+        <script>
+            function copyBibtex() {
+                const bibtexText = document.getElementById('bibtex-text').textContent;
+                navigator.clipboard.writeText(bibtexText).then(function() {
+                    const button = document.querySelector('.copy-button');
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+                    button.style.background = '#059669';
+                    
+                    setTimeout(function() {
+                        button.textContent = originalText;
+                        button.style.background = '';
+                    }, 2000);
+                }).catch(function(err) {
+                    console.error('Failed to copy text: ', err);
+                });
+            }
+
+            // Table sorting functionality
+            function initTableSort() {
+                const table = document.getElementById('results-table');
+                const headers = table.querySelectorAll('th.sortable');
+                
+                headers.forEach(header => {
+                    header.addEventListener('click', function() {
+                        const column = parseInt(this.dataset.column);
+                        const type = this.dataset.type;
+                        const currentSort = this.classList.contains('sort-asc') ? 'asc' : 
+                                          this.classList.contains('sort-desc') ? 'desc' : 'none';
+                        
+                        // Clear all sort indicators
+                        headers.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+                        
+                        // Set new sort direction
+                        let newSort;
+                        if (currentSort === 'none') {
+                            newSort = 'asc';
+                        } else if (currentSort === 'asc') {
+                            newSort = 'desc';
+                        } else {
+                            newSort = 'asc';
+                        }
+                        
+                        this.classList.add(`sort-${newSort}`);
+                        
+                        // Sort the table
+                        sortTable(table, column, newSort, type);
+                    });
+                });
+            }
+            
+            function sortTable(table, column, direction, type) {
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                
+                rows.sort((a, b) => {
+                    const aCell = a.cells[column];
+                    const bCell = b.cells[column];
+                    
+                    let aValue, bValue;
+                    
+                    if (type === 'number') {
+                        aValue = parseFloat(aCell.textContent.trim());
+                        bValue = parseFloat(bCell.textContent.trim());
+                    } else if (column === 1) { // Think column
+                        aValue = aCell.textContent.trim() === '✓' ? 1 : 0;
+                        bValue = bCell.textContent.trim() === '✓' ? 1 : 0;
+                    } else {
+                        aValue = aCell.textContent.trim().toLowerCase();
+                        bValue = bCell.textContent.trim().toLowerCase();
+                    }
+                    
+                    if (type === 'number' || column === 1) {
+                        return direction === 'asc' ? aValue - bValue : bValue - aValue;
+                    } else {
+                        if (direction === 'asc') {
+                            return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+                        } else {
+                            return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+                        }
+                    }
+                });
+                
+                // Clear tbody and append sorted rows
+                tbody.innerHTML = '';
+                rows.forEach(row => tbody.appendChild(row));
+            }
+            
+            // Filter functionality
+            function initTableFilters() {
+                const developerFilter = document.getElementById('developer-filter');
+                const thinkFilter = document.getElementById('think-filter');
+                const clearFiltersBtn = document.getElementById('clear-filters');
+                const table = document.getElementById('results-table');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+
+                function applyFilters() {
+                    const developerValue = developerFilter.value;
+                    const thinkValue = thinkFilter.value;
+
+                    rows.forEach(row => {
+                        const developerCell = row.cells[0].textContent.trim();
+                        const thinkCell = row.cells[2].textContent.trim();
+                        
+                        const developerMatch = !developerValue || developerCell === developerValue;
+                        const thinkMatch = !thinkValue || thinkCell === thinkValue;
+                        
+                        if (developerMatch && thinkMatch) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                }
+
+                function clearFilters() {
+                    developerFilter.value = '';
+                    thinkFilter.value = '';
+                    rows.forEach(row => {
+                        row.style.display = '';
+                    });
+                }
+
+                developerFilter.addEventListener('change', applyFilters);
+                thinkFilter.addEventListener('change', applyFilters);
+                clearFiltersBtn.addEventListener('click', clearFilters);
+            }
+
+            // Initialize table sorting when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                initTableSort();
+                initTableFilters();
+            });
+        </script>
+    </section>
+
+    <footer style="background: #f8fafc; padding: 2rem 0; text-align: center; color: #666; border-top: 1px solid rgba(0,0,0,0.1);">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <p style="margin-bottom: 1rem;">
+                <strong>SOSBench: Benchmarking Safety Alignment on Scientific Knowledge</strong>
+            </p>
+            <!-- <p style="font-size: 0.9rem;">
+                A comprehensive evaluation framework for assessing LLM safety when handling scientifically sophisticated and potentially hazardous content.
+            </p> -->
+            <div style="margin-top: 1.5rem;">
+                <a href="https://arxiv.org/abs/2505.21605" style="color: var(--primary); text-decoration: none; font-weight: 500;" target="_blank">
+                    📄 Read the Paper
+                </a>
+            </div>
+        </div>
+    </footer>
+
+</html>
